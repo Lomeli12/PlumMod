@@ -12,7 +12,6 @@ namespace PlumMod {
             this.type = ModType.getTypeFromExtension(filePath);
             var dir = Path.GetDirectoryName(filePath);
             var descFile = dir + "\\" + this.fileName + ".desc";
-            Console.WriteLine(descFile);
             if (File.Exists(descFile)) this.name = getModName(descFile);
         }
         
