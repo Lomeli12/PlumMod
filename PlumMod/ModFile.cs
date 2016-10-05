@@ -3,20 +3,29 @@ using System.IO;
 
 namespace PlumMod {
     public class ModFile {
-        string fileName, name, path;
+        string fileName, name, desc, path;
+        bool hasDescription;
         ModType type;
         
         public ModFile(string filePath) {
-            this.path = filePath;
-            this.fileName = Path.GetFileNameWithoutExtension(filePath);
-            this.type = ModType.getTypeFromExtension(filePath);
+            path = filePath;
+            fileName = Path.GetFileNameWithoutExtension(filePath);
+            type = ModType.getTypeFromExtension(filePath);
             var dir = Path.GetDirectoryName(filePath);
-            var descFile = dir + "\\" + this.fileName + ".desc";
-            if (File.Exists(descFile)) this.name = getModName(descFile);
+            var descFile = dir + "\\" + fileName + ".desc";
+            if (File.Exists(descFile)) readDescriptionFile(descFile);
         }
         
         public string getModName() {
             return String.IsNullOrWhiteSpace(name) ? fileName : name;
+        }
+
+        public string getModDescription() {
+            return hasDescription ? desc : "";
+        }
+
+        public string getModPath() {
+            return path;
         }
         
         public ModType getModType() {
@@ -25,6 +34,10 @@ namespace PlumMod {
         
         public bool isDisabled() {
             return type == ModType.DISABLED_PACKAGE || type == ModType.DISABLED_SCRIPT;
+        }
+
+        public bool hasModDescription() {
+            return hasDescription;
         }
         
         public void changeModState() {
@@ -38,17 +51,24 @@ namespace PlumMod {
                 path = newPath;
             }
         }
-        
-        public static bool isModFile(string filePath) {
-            return !String.IsNullOrWhiteSpace(filePath) && File.Exists(filePath) && 
-                (filePath.EndsWith(".package") || filePath.EndsWith(".zip") || filePath.EndsWith(".ts4script") || filePath.EndsWith(".package.disabled") || filePath.EndsWith(".zip.disabled") || filePath.EndsWith(".ts4script.disabled"));
+
+        void readDescriptionFile(string file) {
+            var text = File.ReadAllLines(file);
+            if (text != null && text.Length > 0) {
+                if (!String.IsNullOrWhiteSpace(text[0])) name = text[0];
+                if (text.Length > 1) {
+                    for (int i = 1; i < text.Length; i++) {
+                        desc += text[i];
+                        if (i != text.Length - 1) desc += "\n";
+                    }
+                    hasDescription = true;
+                }
+            }
         }
         
-        static string getModName(string file) {
-            string name = null;
-            var names = File.ReadAllLines(file);
-            if (names != null && names.Length > 0) name = names[0];
-            return name;
+        public static bool isModFile(string filePath) {
+            return !String.IsNullOrWhiteSpace(filePath) && File.Exists(filePath) &&
+            (filePath.EndsWith(".package") || filePath.EndsWith(".zip") || filePath.EndsWith(".ts4script") || filePath.EndsWith(".package.disabled") || filePath.EndsWith(".zip.disabled") || filePath.EndsWith(".ts4script.disabled"));
         }
     }
 }

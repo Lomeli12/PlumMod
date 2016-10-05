@@ -4,7 +4,8 @@ using System.Windows.Forms;
 namespace PlumMod {
     public class ListModItem : ListViewItem {
         ModFile mod;
-        public ListModItem(ModFile mod) : base() {
+        public ListModItem(ModFile mod)
+            : base() {
             this.mod = mod;
             updateModStatus();
         }
