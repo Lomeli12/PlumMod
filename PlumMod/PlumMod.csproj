@@ -8,8 +8,9 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>PlumMod</RootNamespace>
     <AssemblyName>PlumMod</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -67,6 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationManager.cs" />
     <Compile Include="GrowLabel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -80,12 +82,24 @@
     </Compile>
     <Compile Include="ModFile.cs" />
     <Compile Include="ModType.cs" />
+    <Compile Include="NameInputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NameInputForm.Designer.cs">
+      <DependentUpon>NameInputForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ZipProgressBar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ZipProgressBar.Designer.cs">
+      <DependentUpon>ZipProgressBar.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -95,9 +109,15 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NameInputForm.resx">
+      <DependentUpon>NameInputForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ZipProgressBar.resx">
+      <DependentUpon>ZipProgressBar.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

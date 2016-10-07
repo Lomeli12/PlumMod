@@ -155,7 +155,7 @@ namespace PlumMod {
         
         void AddModBtnClick(object sender, EventArgs e) {
             addModDialog.ShowDialog();
-            string[] fileNames = addModDialog.FileNames;
+            var fileNames = addModDialog.FileNames;
             if (fileNames != null && fileNames.Length > 0) {
                 for (int i = 0; i < fileNames.Length; i++) {
                     var file = fileNames[i];
@@ -201,16 +201,16 @@ namespace PlumMod {
         }
 
         void clearCacheBtn_Click(object sender, EventArgs e) {
-            long dataCleared = 0;
+            var dataCleared = 0l;
             if (File.Exists(sims4FolderPath + "\\localthumbcache.package")) {
                 dataCleared += new FileInfo(sims4FolderPath + "\\localthumbcache.package").Length;
                 File.Delete(sims4FolderPath + "\\localthumbcache.package");
             }
             if (Directory.Exists(sims4FolderPath + "\\cache")) {
-                string[] fileNames = Directory.GetFiles(sims4FolderPath + "\\cache");
+                var fileNames = Directory.GetFiles(sims4FolderPath + "\\cache");
                 if (fileNames != null && fileNames.Length > 0) {
                     for (int i = 0; i < fileNames.Length; i++) {
-                        string filename = fileNames[i];
+                        var filename = fileNames[i];
                         if (File.Exists(filename)) {
                             if (filename.EndsWith("FileCache.cfg") || filename.EndsWith("FileCache.ini")) continue;
                             else {
@@ -233,7 +233,7 @@ namespace PlumMod {
                 if (!Directory.Exists(modFolderPath + "\\unpackedmod")) Directory.CreateDirectory(modFolderPath + "\\unpackedmod");
                 if (File.Exists(modFolderPath + "\\Resource.cfg")) {
                     var backupPath = modFolderPath + "\\Resource.cfg.bak";
-                    int counter = 0;
+                    var counter = 0;
                     while (File.Exists(backupPath)) {
                         backupPath = modFolderPath + "\\Resource.cfg." + counter + ".bak";
                         counter++;
@@ -250,6 +250,56 @@ namespace PlumMod {
                 MessageBox.Show("Finished Tunning Prep.");
             }
         }
+        
+        void ResWidthValueChanged(object sender, EventArgs e) {
+            simsConfig.WriteInt("resolutionwidth", (int)resWidth.Value, "options");
+        }
+        
+        void ResHeightValueChanged(object sender, EventArgs e) {
+            simsConfig.WriteInt("resolutionheight", (int)resHeight.Value, "options");
+        }
+
+        /**
+         * Config Tab
+         **/
+        
+        void updateConfigList() {
+            ConfigurationManager.getModConfigList();
+            configListBox.Items.Clear();
+            foreach (var name in ConfigurationManager.configurationNames)
+                configListBox.Items.Add(name);
+        }
+        void saveConfigBtn_Click(object sender, EventArgs e) {
+            var form = new NameInputForm("");
+            form.ShowDialog();
+            if (!form.Canceled) {
+                ConfigurationManager.saveCurrentConfig(modFolderPath, form.Name);
+                updateConfigList();
+            }
+        }
+
+        void configTab_Enter(object sender, EventArgs e) {
+            updateConfigList();
+        }
+
+        void deleteModConfigBtn_Click(object sender, EventArgs e) {
+            var itemName = configListBox.SelectedItem;
+            if (itemName != null && !String.IsNullOrWhiteSpace(itemName.ToString())) {
+                ConfigurationManager.deleteConfig(itemName.ToString());
+                updateConfigList();
+            }
+        }
+
+        void loadConfigBtn_Click(object sender, EventArgs e) {
+            var itemName = configListBox.SelectedItem;
+            if (itemName != null && !String.IsNullOrWhiteSpace(itemName.ToString())) {
+                ConfigurationManager.loadConfiguration(modFolderPath, itemName.ToString());
+                initialized = false;
+                listMods();
+            }
+        }
+       
+
         /**
          * About Tab
          **/
